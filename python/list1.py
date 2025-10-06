@@ -23,13 +23,12 @@
 # Note: python does not have a ++ operator, but += works.
 def match_ends(words):
   count =0
-  for i in range(len(words)):
-    for j in range(len(i)):
-      if( len(words[i])>=1 and words[i][j]):
-          count+=1
+  for i in (words):
+    if len(i)>=2 and i[0]==i[len(i)-1]:
+      count+=1
   # +++your code here+++
   return count
-match_ends(['aba', 'xyz', 'aa', 'x', 'bbb'])
+print(match_ends(['aba', 'xyz', 'aa', 'x', 'bbb']))
 
 # B. front_x
 # Given a list of strings, return a list with the strings
@@ -38,9 +37,25 @@ match_ends(['aba', 'xyz', 'aa', 'x', 'bbb'])
 # ['xanadu', 'xyz', 'aardvark', 'apple', 'mix']
 # Hint: this can be done by making 2 lists and sorting each of them
 # before combining them.
-#def front_x(words):
+def front_x(words):
+  x_list=[]
+  other_list=[]
+  for i in words:
+    if(i[0]=='x'):
+      x_list.append(i)
+    else:
+      other_list.append(i)
+  other_list.sort()
+
+  for i in other_list:
+
+      x_list.append(i)
+
   # +++your code here+++
- # return
+
+  return x_list
+
+print(front_x(['aba', 'xyz', 'aa', 'x', 'bbb']))
 
 
 
@@ -50,10 +65,15 @@ match_ends(['aba', 'xyz', 'aa', 'x', 'bbb'])
 # e.g. [(1, 7), (1, 3), (3, 4, 5), (2, 2)] yields
 # [(2, 2), (1, 3), (3, 4, 5), (1, 7)]
 # Hint: use a custom key= function to extract the last element form each tuple.
-#def sort_last(tuples):
+def get_last(t):
+  return t[-1]
+def sort_last(tuples):
   # +++your code here+++
- # return
+  return sorted(tuples, key=get_last)
+  
 
+print(sort_last([(1, 7), (1, 3), (3, 4, 5), (2, 2)]))
+ 
 
 # Simple provided test() function used in main() to print
 # what each function returns vs. what it's supposed to return.
@@ -71,7 +91,7 @@ def main():
   test(match_ends(['aba', 'xyz', 'aa', 'x', 'bbb']), 3)
   test(match_ends(['', 'x', 'xy', 'xyx', 'xx']), 2)
   test(match_ends(['aaa', 'be', 'abc', 'hello']), 1)
-'''
+
   print()
   print('front_x')
   test(front_x(['bbb', 'ccc', 'axx', 'xzz', 'xaa']),
@@ -81,7 +101,7 @@ def main():
   test(front_x(['mix', 'xyz', 'apple', 'xanadu', 'aardvark']),
        ['xanadu', 'xyz', 'aardvark', 'apple', 'mix'])
 
-
+'''
   print()
   print('sort_last')
   test(sort_last([(1, 3), (3, 2), (2, 1)]),
