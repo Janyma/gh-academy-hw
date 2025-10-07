@@ -63,8 +63,19 @@ print(both_ends("TESZTTT"))
 # Hint: s.replace(stra, strb) returns a version of string s
 # where all instances of stra have been replaced by strb.
 def fix_start(s):
+  a=s[0]
+  b=a
+  for i in range(1,len(s)):
+    if s[i]==a:
+      b+="*"
+    else:
+      b+=s[i]
+
+
   # +++your code here+++
-  return
+  return b
+
+print(fix_start("ttjjjttt"))
 
 
 # D. MixUp
@@ -76,7 +87,12 @@ def fix_start(s):
 # Assume a and b are length 2 or more.
 def mix_up(a, b):
   # +++your code here+++
-  return
+  first_a=a[0:2]
+  first_b=b[0:2]
+  new_a=first_b+a[2:len(a)]
+  new_b=first_a+b[2:len(b)]
+  new_string = new_a+" "+new_b
+  return new_string
 
 
 # Provided simple test() function used in main() to print
