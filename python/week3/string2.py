@@ -40,7 +40,15 @@ def verbing(s):
 # This dinner is good!
 def not_bad(s):
   # +++your code here+++
-  return
+  not_ind=s.find("not")
+  bad_ind=s.find("bad")
+  if(bad_ind>not_ind and not_ind!=-1 and bad_ind!=-1):
+    a=s[0:not_ind]+"good"+s[bad_ind+3:]
+    return a
+  else:
+    return s
+
+  
 
 
 # F. front_back
