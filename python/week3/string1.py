@@ -93,7 +93,6 @@ def mix_up(a, b):
   new_b=first_a+b[2:len(b)]
   new_string = new_a+" "+new_b
   return new_string
-Test Zhanyl
 
 # Provided simple test() function used in main() to print
 # what each function returns vs. what it's supposed to return.
