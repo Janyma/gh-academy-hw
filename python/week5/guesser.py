@@ -3,7 +3,7 @@ import random
 
 
 def guesser(c):
-    a=random.randint(1,10)
+    a=random.randint(1,100)
     while(c>0):
         b=int(input("guess number: "))
 
