@@ -14,7 +14,15 @@ def dice_rolling():
     return roll
 
 def frequency_rolls():
-    rolls = int(input("How many rolls do you want? "))
+    while True:
+        try: 
+            rolls = int(input("How many rolls do you want? "))
+            break
+        except ValueError:
+            print("Please give valid number")
+
+
+
     dict_frequency = {i: 0 for i in range(2, 13)}
     print(dict_frequency)
     for i in range(rolls):
