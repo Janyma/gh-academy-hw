@@ -3,6 +3,9 @@ class BankAccount:
         self.owner_name=owner_name
         self.balance=balance
 
+    def deposit(self, amount):
+        self.balance+=amount
+
     def withdraw_money(self, amount):
         if self.balance<amount:
             print("You dont have enough money in your account")
@@ -16,4 +19,6 @@ class BankAccount:
 
 account_janyl=BankAccount("Janyl", 1000)
 account_janyl.withdraw_money(2000)
+account_janyl.deposit(300)
+account_janyl.withdraw_money(1200)
 print(account_janyl.display_balance())
