@@ -1,11 +1,8 @@
-let uuid;
-(async () => {
-  const { v4 } = await import("uuid");
-  uuid = v4;
-})();const Workout = require("../database/Workout")
 
-const getAllWorkouts =()=>{
-    const allWorkouts = Workout.getAllWorkouts();
+const Workout = require("../database/Workout")
+
+const getAllWorkouts =async()=>{
+    const allWorkouts = await Workout.getAllWorkouts();
     return allWorkouts;
 };
 
@@ -17,7 +14,6 @@ const getOneWorkout =(workoutId)=>{
 const createNewWorkout =(newWorkout)=>{
     const workoutToInsert = {
         ...newWorkout,
-        id: uuid(),
         createdAt: new Date().toLocaleString("en-US", {timeZone: "UTC"}),
         updatedAt: new Date().toLocaleString("en-US", {timeZone: "UTC"})
     };

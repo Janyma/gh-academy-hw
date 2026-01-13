@@ -1,65 +1,87 @@
-const DB = require("./db.json");
+const {MongoClient, ObjectId, ReturnDocument}=require("mongodb");
+const uri="mongodb+srv://123janyl456_db_user:qBWFajtZx2NlNtnM@workoutcluster.8tflspo.mongodb.net/?retryWrites=true&writeConcern=majority";
+if(!uri){
+    throw new Error("Please define the MONGODB_URI environment variable inside .env.local");
+}
+const client = new MongoClient(uri);
 
-const {saveToDatabase}= require("./utils");
-
-const getAllWorkouts = ()=>{
-    return DB.workouts;
+async function run(fn) {
+    await client.connect();
+    try {
+        const db = client.db("workout");
+        const collection = db.collection("workouts");
+        return await fn(collection);
+    } finally {
+        await client.close();
+    }
 }
 
-const getOneWorkout = (workoutId) => {
-    const workout =DB.workouts.find((workout) => workout.id === workoutId);
-    if(!workout){
-        return;
-    }
-    return workout
+const getAllWorkouts = async ()=>{
+    return await run(async (collection) => {
+        const docs =await collection.find({}).toArray();
+        if(docs.length===1 && Array.isArray(docs[0].workouts)){
+            return docs[0].workouts;
+        }
+        return docs;
+    });
+};
+
+const getOneWorkout = async (workoutId) => {
+    return await run(async(collection) => {
+        const query = ObjectId.isValid(workoutId) ? {_id: new ObjectId(workoutId)} : {id: workoutId};
+        return await collection.findOne(query);
+    });
 }
 
-const createNewWorkout =(newWorkout) => {
-    const isAlreadyAdded=
-    DB.workouts.findIndex((workout)=>workout.name===newWorkout.name)> -1;
+const createNewWorkout = async (newWorkout) => { 
 
-    if(isAlreadyAdded){
-        return
-    }
+   return await run(async (collection) => {
+    newWorkout.createdAt = new Date().toLocaleString("en-US", {timeZone: "UTC"});
+    newWorkout.updatedAt = new Date().toLocaleString("en-US", {timeZone: "UTC"});
 
     try{
-        DB.workouts.push(newWorkout);
-        saveToDatabase(DB);
-        return newWorkout;
+           const res = await collection.insertOne(newWorkout);
+           return await collection.findOne({_id: res.insertedId});
     }catch (error){
         throw {status: 500, message: error?.message || error}
     }
+
+
+   });
+
 };
 
-const updateOneWorkout =(workoutId) =>{
-    const indexForUpdate = DB.workouts.findIndex(
-        (workout)=>workout.id===workoutId
-    );
-    if(indexForUpdate===-1){
-        return
-    }
+const updateOneWorkout =(workoutId, changes) =>{
+    return run(async (collection) => {
+        const filter = ObjectId.isValid(workoutId) ? {_id: new ObjectId(workoutId)} : {id: workoutId};
 
-    const updatedWorkout={
-        ...DB.workouts[indexForUpdate],
-        ...changes,
-        updatedAt: new Date().toLocaleDateString("en-US", {timeZone: "UTC"})
-    };
-    DB.workouts[indexForUpdate]=updatedWorkout;
-    saveToDatabase(DB);
-    return updatedWorkout;
+        const updateDoc = {
+            $set: {
+                ...changes,
+                updatedAt: new Date().toLocaleString("en-US", {timeZone: "UTC"})
+            }
+        };
+        const res = await collection.findOneAndUpdate(filter, updateDoc, { ReturnDocument: "after"});
+        return res.value;
+    });
 }
 
 const deleteOneWorkout = (workoutId)=>{
-    const indexForDeletion =DB.workouts.findIndex(
-        (workout)=workout.id ===workoutId
-    );
+    return run(async (collection) => {
+        const filter = ObjectId.isValid(workoutId) ? {_id: new ObjectId(workoutId)} : {id: workoutId};
+        const res=await collection.deleteOne(filter);
+        return res.deletedCount===1;
+    });
+    // const indexForDeletion =DB.workouts.findIndex(
+    //     (workout)=workout.id ===workoutId
+    // );
 
-    if(indexForDeletion===-1){
-        return
-    }
+    // if(indexForDeletion===-1){
+    //     return
+    // }
 
-    DB.workouts.splice(indexForDeletion, 1);
-    saveToDatabase(DB)
+    // DB.workouts.splice(indexForDeletion, 1);
+    // saveToDatabase(DB)
 }
 
 module.exports={getAllWorkouts,
